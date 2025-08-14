@@ -2,7 +2,7 @@ use core::cell::OnceCell;
 
 use luajit::ffi::State;
 
-use crate::ffi;
+use crate::{ffi, error::Error};
 
 thread_local! {
     static LOOP: OnceCell<*mut ffi::uv_loop_t> = const { OnceCell::new() };
@@ -13,10 +13,10 @@ thread_local! {
 /// NOTE: this function **must** be called before calling any other function
 /// exposed by this crate or there will be segfaults.
 #[doc(hidden)]
-pub unsafe fn init(lua_state: *mut State) {
+pub unsafe fn init(lua_state: *mut State) -> Result<(), Error> {
     LOOP.with(|uv_loop| {
-        let _ = uv_loop.set(ffi::luv_loop(lua_state));
-    });
+        uv_loop.set(ffi::luv_loop(lua_state)).map_err(|_| Error::LibuvAlreadyInitialized)
+    })
 }
 
 /// Executes a function with access to the libuv loop.

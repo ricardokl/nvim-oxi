@@ -1,6 +1,6 @@
 use core::ffi::c_int;
 
-use luajit::{Pushable, ffi::State};
+use luajit::{ffi::State, Pushable};
 
 /// The entrypoint of the plugin.
 ///
@@ -12,12 +12,17 @@ where
     T: Pushable,
 {
     unsafe {
-        types::arena_init();
+        let init = || -> crate::Result<()> {
+            types::arena_init()?;
+            luajit::init(lua_state)?;
+            #[cfg(feature = "libuv")]
+            libuv::init(lua_state)?;
+            Ok(())
+        };
 
-        luajit::init(lua_state);
-
-        #[cfg(feature = "libuv")]
-        libuv::init(lua_state);
+        if let Err(err) = init() {
+            return luajit::utils::push_error(&err, lua_state);
+        }
 
         match body().push(lua_state) {
             Ok(num_pushed) => num_pushed,

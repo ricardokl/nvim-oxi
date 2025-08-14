@@ -26,6 +26,9 @@ pub enum Error {
 
     #[error("TODO")]
     PopEmptyStack,
+
+    #[error("The Lua state has already been initialized")]
+    LuaAlreadyInitialized,
 }
 
 impl Error {

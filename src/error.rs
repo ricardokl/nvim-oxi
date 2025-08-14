@@ -20,6 +20,9 @@ pub enum Error {
     ObjectConversion(#[from] types::conversion::Error),
 
     #[error(transparent)]
+    Types(#[from] types::init_error::InitError),
+
+    #[error(transparent)]
     Serialize(#[from] types::serde::SerializeError),
 
     #[error(transparent)]

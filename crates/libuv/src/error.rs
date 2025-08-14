@@ -18,4 +18,7 @@ pub enum Error {
 
     #[error("Couldn't stop timer handle")]
     TimerStop,
+
+    #[error("The libuv loop has already been initialized")]
+    LibuvAlreadyInitialized,
 }

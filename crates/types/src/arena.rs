@@ -24,15 +24,19 @@ impl Arena {
     }
 }
 
+use crate::init_error::InitError;
+
 /// Initializes the [`Arena`].
 ///
 /// This should be called as soon as the plugin is loaded.
 #[doc(hidden)]
 #[inline]
-pub fn arena_init() {
+pub fn arena_init() -> Result<(), InitError> {
     ARENA.with(|arena| {
-        let _ = arena.set(Arena::new());
-    });
+        arena
+            .set(Arena::new())
+            .map_err(|_| InitError::ArenaAlreadyInitialized)
+    })
 }
 
 /// Returns a pointer to the [`Arena`] that can be passed to the C API.

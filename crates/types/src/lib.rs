@@ -7,6 +7,7 @@ mod array;
 pub mod conversion;
 mod dictionary;
 mod error;
+pub mod init_error;
 mod function;
 mod kvec;
 mod macros;

@@ -1,6 +1,6 @@
 use core::cell::OnceCell;
 
-use crate::ffi::State;
+use crate::{error::Error, ffi::State};
 
 thread_local! {
     static LUA: OnceCell<*mut State> = const { OnceCell::new() };
@@ -10,10 +10,10 @@ thread_local! {
 ///
 /// NOTE: this function **must** be called before calling any other function
 /// exposed by this crate or there will be segfaults.
-pub unsafe fn init(lstate: *mut State) {
+pub unsafe fn init(lstate: *mut State) -> Result<(), Error> {
     LUA.with(|lua| {
-        let _ = lua.set(lstate);
-    });
+        lua.set(lstate).map_err(|_| Error::LuaAlreadyInitialized)
+    })
 }
 
 /// Executes a function with access to the Lua state.
