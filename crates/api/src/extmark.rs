@@ -135,7 +135,7 @@ impl Buffer {
             err,
             match was_found {
                 true => Ok(()),
-                _ => Err(Error::custom(format!(
+                _ => Err(Error::from(format!(
                     "No extmark with id {extmark_id} was found"
                 ))),
             }
@@ -169,7 +169,7 @@ impl Buffer {
         };
         choose!(err, {
             if tuple.is_empty() {
-                return Err(Error::custom(format!(
+                return Err(Error::from(format!(
                     "No extmark with id {extmark_id} was found"
                 )));
             }

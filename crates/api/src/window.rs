@@ -129,7 +129,7 @@ impl Window {
                 Object::pop(lstate)
             })
         }
-        .map_err(crate::Error::custom)?;
+        .map_err(crate::Error::from)?;
 
         choose!(err, {
             fun.remove_from_lua_registry();

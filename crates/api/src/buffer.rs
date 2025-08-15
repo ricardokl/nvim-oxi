@@ -126,7 +126,7 @@ impl Buffer {
             err,
             match has_attached {
                 true => Ok(()),
-                _ => Err(Error::custom("Attaching to buffer failed")),
+                _ => Err(Error::from("Attaching to buffer failed")),
             }
         )
     }
@@ -169,7 +169,7 @@ impl Buffer {
                 Object::pop(lstate)
             })
         }
-        .map_err(Error::custom)?;
+        .map_err(Error::from)?;
 
         choose!(err, {
             fun.remove_from_lua_registry();
@@ -213,7 +213,7 @@ impl Buffer {
             match was_deleted {
                 true => Ok(()),
 
-                _ => Err(Error::custom("Couldn't delete mark")),
+                _ => Err(Error::from("Couldn't delete mark")),
             }
         )
     }
@@ -559,7 +559,7 @@ impl Buffer {
             err,
             match mark_was_set {
                 true => Ok(()),
-                _ => Err(Error::custom("Couldn't set mark")),
+                _ => Err(Error::from("Couldn't set mark")),
             }
         )
     }

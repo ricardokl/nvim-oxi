@@ -19,11 +19,11 @@ pub enum Error {
     ObjectConversion(#[from] types::conversion::Error),
 
     #[error("{0}")]
-    Other(String),
+    Message(String),
 }
 
-impl Error {
-    pub(crate) fn custom<M: Display>(msg: M) -> Self {
-        Self::Other(msg.to_string())
+impl<S: Into<String>> From<S> for Error {
+    fn from(s: S) -> Self {
+        Self::Message(s.into())
     }
 }
