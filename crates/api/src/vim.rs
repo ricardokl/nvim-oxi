@@ -89,7 +89,7 @@ pub fn del_mark(name: char) -> Result<()> {
         err,
         match was_deleted {
             true => Ok(()),
-            _ => Err(Error::custom("Couldn't delete mark")),
+            _ => Err(Error::from("Couldn't delete mark")),
         }
     )
 }
@@ -206,7 +206,7 @@ pub fn get_color_by_name(name: &str) -> Result<u32> {
     let name = nvim::String::from(name);
     let color = unsafe { nvim_get_color_by_name(name.as_nvim_str()) };
     (color != -1).then(|| color.try_into().unwrap()).ok_or_else(|| {
-        Error::custom(format!("{name:?} is not a valid color name"))
+        Error::from(format!("{name:?} is not a valid color name"))
     })
 }
 
@@ -647,7 +647,7 @@ pub fn open_term(buffer: &Buffer, opts: &OpenTermOpts) -> Result<u32> {
     choose!(
         err,
         match channel_id {
-            0 => Err(Error::custom("Couldn't create terminal instance")),
+            0 => Err(Error::from("Couldn't create terminal instance")),
             other => Ok(other.try_into().expect("always positive")),
         }
     )
