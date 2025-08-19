@@ -13,10 +13,11 @@ thread_local! {
 /// NOTE: this function **must** be called before calling any other function
 /// exposed by this crate or there will be segfaults.
 #[doc(hidden)]
-pub unsafe fn init(lua_state: *mut State) {
+pub unsafe fn init(lua_state: *mut State) -> Result<(), crate::Error> {
     LOOP.with(|uv_loop| {
-        let _ = uv_loop.set(ffi::luv_loop(lua_state));
-    });
+        uv_loop.set(ffi::luv_loop(lua_state))
+            .map_err(|_| crate::Error::AlreadyInitialized)
+    })
 }
 
 /// Executes a function with access to the libuv loop.

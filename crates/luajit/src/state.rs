@@ -10,10 +10,10 @@ thread_local! {
 ///
 /// NOTE: this function **must** be called before calling any other function
 /// exposed by this crate or there will be segfaults.
-pub unsafe fn init(lstate: *mut State) {
+pub unsafe fn init(lstate: *mut State) -> Result<(), crate::Error> {
     LUA.with(|lua| {
-        let _ = lua.set(lstate);
-    });
+        lua.set(lstate).map_err(|_| crate::Error::AlreadyInitialized)
+    })
 }
 
 /// Executes a function with access to the Lua state.
