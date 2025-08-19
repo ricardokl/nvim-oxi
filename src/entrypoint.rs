@@ -15,45 +15,23 @@ where
     T: Pushable,
 {
     unsafe {
-        // Step 1: Initialize arena
-        let arena_result = match types::arena_init() {
-            Ok(()) => Ok(()),
-            Err(e) => Err(Error::from(e)),
-        };
-
-        // Step 2: Initialize luajit
-        let luajit_result = match arena_result {
-            Ok(()) => {
-                let init_result = luajit::init(lua_state);
-                match init_result {
-                    Ok(()) => Ok(()),
-                    Err(e) => Err(Error::from(e)),
-                }
-            },
-            Err(e) => Err(e),
-        };
-
-        // Step 3: Initialize libuv (if feature enabled)
-        let libuv_result = match luajit_result {
-            Ok(()) => {
+        // Initialize arena, luajit, and libuv in sequence using and_then
+        let init_result = types::arena_init()
+            .map_err(Error::from)
+            .and_then(|_| luajit::init(lua_state).map_err(Error::from))
+            .and_then(|_| {
                 #[cfg(feature = "libuv")]
                 {
-                    let init_result = libuv::init(lua_state);
-                    match init_result {
-                        Ok(()) => Ok(()),
-                        Err(e) => Err(Error::from(e)),
-                    }
+                    libuv::init(lua_state).map_err(Error::from)
                 }
                 #[cfg(not(feature = "libuv"))]
                 {
                     Ok(())
                 }
-            },
-            Err(e) => Err(e),
-        };
+            });
 
-        // Step 4: Execute body and push result
-        let result: std::result::Result<c_int, Error> = match libuv_result {
+        // Execute body and push result
+        let result: std::result::Result<c_int, Error> = match init_result {
             Ok(()) => {
                 // Catch panics from body()
                 match panic::catch_unwind(panic::AssertUnwindSafe(body)) {
