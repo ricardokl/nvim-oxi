@@ -10,6 +10,9 @@ mod pushable;
 mod state;
 pub mod utils;
 
+#[cfg(feature = "mlua")]
+pub mod mlua;
+
 pub use error::Error;
 pub use into_result::IntoResult;
 #[doc(hidden)]

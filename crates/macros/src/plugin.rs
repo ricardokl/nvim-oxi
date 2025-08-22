@@ -22,6 +22,7 @@ pub fn plugin(attr: TokenStream, item: TokenStream) -> TokenStream {
     quote! {
         #entrypoint
 
+        #[cfg(not(feature = "mlua"))]
         #[unsafe(no_mangle)]
         unsafe extern "C" fn #lua_module(
             state: *mut #nvim_oxi::lua::ffi::State,

@@ -15,6 +15,9 @@ mod object;
 #[cfg(feature = "serde")]
 pub mod serde;
 mod str;
+
+#[cfg(feature = "mlua")]
+pub mod mlua;
 mod string;
 mod string_builder;
 

@@ -80,6 +80,17 @@ pub mod mlua {
             })
         }
     }
+
+    /// Initializes `nvim-oxi` to be used inside an `mlua` plugin.
+    ///
+    /// # Safety
+    ///
+    /// This function should only be called once.
+    pub unsafe fn init(lua: &mlua::Lua) -> crate::Result<()> {
+        luajit::mlua::init(lua);
+        types::mlua::init_arena(lua)?;
+        Ok(())
+    }
 }
 
 pub use error::{Error, Result};

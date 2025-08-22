@@ -55,7 +55,7 @@ __docsrs = ["mlua?/vendored"]
 __no_docsrs = ["mlua?/module"]
 
 libuv = ["dep:libuv"]
-mlua = ["dep:mlua"]
+mlua = ["dep:mlua", "luajit/mlua", "types/mlua", "macros/mlua"]
 test = ["macros/test", "dep:cargo_metadata"]
 test-terminator = ["test", "libuv", "macros/test-terminator"]
 

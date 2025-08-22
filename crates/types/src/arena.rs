@@ -43,11 +43,10 @@ pub fn arena_init() {
 #[doc(hidden)]
 #[inline]
 pub fn arena() -> *mut Arena {
-    ptr::null_mut()
-    // ARENA.with(|arena| {
-    //     let Some(arena) = arena.get() else {
-    //         panic!("Arena is not initialized")
-    //     };
-    //     arena as *const _ as *mut _
-    // })
+    ARENA.with(|arena| {
+        let Some(arena) = arena.get() else {
+            panic!("Arena is not initialized")
+        };
+        arena as *const _ as *mut _
+    })
 }
