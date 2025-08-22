@@ -2,6 +2,7 @@
 #![allow(deprecated)]
 
 mod api;
+mod from_object;
 mod r#macro;
 
 // Libuv bindings don't work on Windows.
